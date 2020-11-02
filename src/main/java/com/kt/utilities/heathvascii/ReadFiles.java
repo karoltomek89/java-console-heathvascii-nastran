@@ -1,3 +1,5 @@
+package com.kt.utilities.heathvascii;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,8 +13,8 @@ public class ReadFiles {
 
     public static void main(String[] args) throws IOException {
 
-        String bdfName = "18075b_2019-04-08_00c00_Cabdoor_thermal_outer_frame_korekcja_konwekcji.bdf";
-        String f06Name = "18075b_2019-04-08_00c00_Cabdoor_thermal_outer_frame_korekcja_konwekcji.f06";
+        String bdfName = "model.bdf";
+        String f06Name = "results.f06";
 
         List<String> chbdyeList;
         List<String> hbdyList;
@@ -25,42 +27,37 @@ public class ReadFiles {
             hbdyList = stream.filter(p -> p.startsWith("                ") & p.contains("      0.000000E+00     ")).sorted().collect(Collectors.toList());
         }
 
-//        System.out.println(chbdyeList.get(0));
-//        System.out.println(chbdyeList.get(1));
-//        System.out.println(chbdyeList.get(chbdyeList.size() - 1));
-//
-//        System.out.println(hbdyList.get(0));
-//        System.out.println(hbdyList.get(1));
-//        System.out.println(hbdyList.get(hbdyList.size() - 1));
+        List<String> hvasciiList = new ArrayList<String>();
 
-//        System.out.println(chbdyeList.get(0).trim().substring(9, 16));
-//        System.out.println(chbdyeList.get(0).trim().substring(17, 24));
-//        System.out.println(hbdyList.get(0).trim().substring(0, 8));
-
-//        System.out.println(hbdyList.get(0).trim().substring(9).replace("     ", ","));
-
-        List<String> hvasciiList = new ArrayList<>();
+        hvasciiList.add("ALTAIR ASCII FILE");
+        hvasciiList.add("$DELIMITER =	,");
+        hvasciiList.add("$SUBCASE = 	1	Subcase	1");
+        hvasciiList.add("$BINDING = 	ELEMENT");
+        hvasciiList.add("$COLUMN_INFO = 	ENTITY_ID");
+        hvasciiList.add("$RESULT_TYPE = APPLIED-LOAD(s), FREE-CONVECTION(s), FORCED-CONVECTION(s), RADIATION(s), TOTAL(s)");
 
         for (int i = 0; i < chbdyeList.size(); i++) {
             if (chbdyeList.get(i).trim().substring(9, 16).trim().equals(hbdyList.get(i).trim().substring(0, 8).trim())) {
-                hvasciiList.add(chbdyeList.get(i).trim().substring(17, 24) + ',' + hbdyList.get(i).trim().substring(9).replace("     ", ",").trim());
+                hvasciiList.add(chbdyeList.get(i).trim().substring(17, 24) + ',' + hbdyList.get(i).trim().substring(9).replace("     ", ",").replace("0.000000E+00", "0").trim());
             } else {
-                System.out.println("error");
+                System.out.println("error parsing data, check elements configuration and numbers");
                 break;
             }
         }
-        System.out.println(System.currentTimeMillis());
-        Files.write(Paths.get("hvascii.neu"), hvasciiList);
+
         System.out.println(System.currentTimeMillis());
 
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("hvascii_v2.neu")))
-        {
+        Files.write(Paths.get("heathvascii.neu"), hvasciiList);
+
+        System.out.println(System.currentTimeMillis());
+
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("heathvascii_v2.neu"))) {
             for (String s : hvasciiList) {
                 writer.write(s + "\n");
             }
         }
+
         System.out.println(System.currentTimeMillis());
     }
-
 
 }

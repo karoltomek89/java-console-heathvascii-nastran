@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: ReadFiles
+Main-Class: com.kt.utilities.heathvascii.ReadFiles
 Class-Path: heathvascii.jar
 

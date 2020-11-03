@@ -2,6 +2,7 @@ package com.kt.utilities.heathvascii;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,11 +20,11 @@ public class ReadFiles {
         List<String> chbdyeList;
         List<String> hbdyList;
 
-        try (Stream<String> stream = Files.lines(Paths.get(bdfName))) {
+        try (Stream<String> stream = Files.lines(Paths.get(bdfName), StandardCharsets.US_ASCII)) {
             chbdyeList = stream.filter(p -> p.startsWith("CHBDYE  ")).sorted().collect(Collectors.toList());
         }
 
-        try (Stream<String> stream = Files.lines(Paths.get(f06Name))) {
+        try (Stream<String> stream = Files.lines(Paths.get(f06Name), StandardCharsets.US_ASCII)) {
             hbdyList = stream.filter(p -> p.startsWith("                ") & p.contains("      0.000000E+00     ")).sorted().collect(Collectors.toList());
         }
 
@@ -38,26 +39,29 @@ public class ReadFiles {
 
         for (int i = 0; i < chbdyeList.size(); i++) {
             if (chbdyeList.get(i).trim().substring(9, 16).trim().equals(hbdyList.get(i).trim().substring(0, 8).trim())) {
-                hvasciiList.add(chbdyeList.get(i).trim().substring(17, 24) + ',' + hbdyList.get(i).trim().substring(9).replace("     ", ",").replace("0.000000E+00", "0").trim());
+                hvasciiList.add(chbdyeList
+                                .get(i)
+                                .trim()
+                                .substring(17, 24) + ',' + hbdyList
+                                .get(i)
+                                .trim()
+                                .substring(9)
+                                .replace("0.000000E+00", "0")
+                                .replace("     ", ",")
+                                .replace("  ", "")
+                                .replace(" ", ""));
             } else {
                 System.out.println("error parsing data, check elements configuration and numbers");
                 break;
             }
         }
 
-        System.out.println(System.currentTimeMillis());
-
-        Files.write(Paths.get("heathvascii.neu"), hvasciiList);
-
-        System.out.println(System.currentTimeMillis());
-
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("heathvascii_v2.neu"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("heathvascii.neu"))) {
             for (String s : hvasciiList) {
                 writer.write(s + "\n");
             }
         }
 
-        System.out.println(System.currentTimeMillis());
     }
 
 }

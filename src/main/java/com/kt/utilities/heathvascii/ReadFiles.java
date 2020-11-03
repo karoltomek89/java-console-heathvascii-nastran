@@ -15,17 +15,17 @@ public class ReadFiles {
     public static void main(String[] args) throws IOException {
 
         ;
-        String bdfName = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".bdf")).findFirst().toString();
-        String f06Name = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".f06")).findFirst().toString();
+        String bdfName = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".bdf")).findFirst().get().toString();
+        String f06Name = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".f06")).findFirst().get().toString();
 
         List<String> chbdyeList;
         List<String> hbdyList;
 
-        try (Stream<String> stream = Files.lines(Paths.get(bdfName), StandardCharsets.US_ASCII)) {
+        try (Stream<String> stream = Files.lines(Paths.get(bdfName), StandardCharsets.ISO_8859_1)) {
             chbdyeList = stream.filter(p -> p.startsWith("CHBDYE  ")).sorted().collect(Collectors.toList());
         }
 
-        try (Stream<String> stream = Files.lines(Paths.get(f06Name), StandardCharsets.US_ASCII)) {
+        try (Stream<String> stream = Files.lines(Paths.get(f06Name), StandardCharsets.ISO_8859_1)) {
             hbdyList = stream.filter(p -> p.startsWith("                ") & p.contains("      0.000000E+00     ")).sorted().collect(Collectors.toList());
         }
 

@@ -14,8 +14,9 @@ public class ReadFiles {
 
     public static void main(String[] args) throws IOException {
 
-        String bdfName = "model.bdf";
-        String f06Name = "results.f06";
+        ;
+        String bdfName = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".bdf")).findFirst().toString();
+        String f06Name = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".f06")).findFirst().toString();
 
         List<String> chbdyeList;
         List<String> hbdyList;

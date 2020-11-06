@@ -14,17 +14,31 @@ public class ReadFiles {
 
     public static void main(String[] args) throws IOException {
 
-        String bdfName = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".bdf")).findFirst().get().toString();
-        String f06Name = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".f06")).findFirst().get().toString();
+        String bdfName = Files.list(Paths.get(""))
+                .filter(path -> path.toString().endsWith(".bdf"))
+                .findFirst()
+                .get()
+                .toString();
 
-        List<String> chbdyeList;
-        List<String> hbdyList;
+        String f06Name = Files.list(Paths.get(""))
+                .filter(path -> path.toString().endsWith(".f06"))
+                .findFirst()
+                .get()
+                .toString();
 
         Stream<String> streamBDF = Files.lines(Paths.get(bdfName), StandardCharsets.ISO_8859_1);
-        chbdyeList = streamBDF.filter(p -> p.startsWith("CHBDYE  ")).sorted().collect(Collectors.toList());
+
+        List<String> chbdyeList = streamBDF
+                .filter(p -> p.startsWith("CHBDYE  "))
+                .sorted()
+                .collect(Collectors.toList());
 
         Stream<String> streamF = Files.lines(Paths.get(f06Name), StandardCharsets.ISO_8859_1);
-        hbdyList = streamF.filter(p -> p.startsWith("                ") & p.contains("      0.000000E+00     ")).sorted().collect(Collectors.toList());
+
+        List<String> hbdyList = streamF
+                .filter(p -> p.startsWith("                ") & p.contains("      0.000000E+00     "))
+                .sorted()
+                .collect(Collectors.toList());
 
         List<String> hvasciiList = new ArrayList<>();
 

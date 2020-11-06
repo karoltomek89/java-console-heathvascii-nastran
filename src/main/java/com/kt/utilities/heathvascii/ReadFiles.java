@@ -49,7 +49,7 @@ public class ReadFiles {
                         .replace("  ", "")
                         .replace(" ", ""));
             } else {
-                System.out.println("error parsing data, check elements configuration and numbers");
+                hvasciiList.add("FATAL ERROR during parsing data, check elements configuration and numbering!");
                 break;
             }
         }

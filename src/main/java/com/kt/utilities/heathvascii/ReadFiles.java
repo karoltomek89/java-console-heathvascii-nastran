@@ -14,7 +14,6 @@ public class ReadFiles {
 
     public static void main(String[] args) throws IOException {
 
-        ;
         String bdfName = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".bdf")).findFirst().get().toString();
         String f06Name = Files.list(Paths.get("")).filter(path -> path.toString().endsWith(".f06")).findFirst().get().toString();
 
@@ -29,7 +28,7 @@ public class ReadFiles {
             hbdyList = stream.filter(p -> p.startsWith("                ") & p.contains("      0.000000E+00     ")).sorted().collect(Collectors.toList());
         }
 
-        List<String> hvasciiList = new ArrayList<String>();
+        List<String> hvasciiList = new ArrayList<>();
 
         hvasciiList.add("ALTAIR ASCII FILE");
         hvasciiList.add("$DELIMITER =	,");

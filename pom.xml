@@ -35,6 +35,17 @@
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.2</version>
+                <configuration>
+                    <archive>
+                        <!--                        uzycie pliku zrobionego przez intelij podczas dodawani artefaktu-->
+                        <!--                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>-->
+                        <!--dodanie informacji o klasie main wprost-->
+                        <manifest>
+                            <mainClass>com.kt.utilities.heathvascii.ReadFiles</mainClass>
+                        </manifest>
+
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>

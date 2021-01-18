@@ -2,45 +2,38 @@ package com.kt.utilities.heathvascii;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ReadFiles {
 
-    public static void main(String[] args) throws IOException {
-
-        String bdfName = Files.list(Paths.get(""))
-                .filter(path -> path.toString().endsWith(".bdf"))
-                .findFirst()
-                .get()
-                .toString();
-
-        String f06Name = Files.list(Paths.get(""))
-                .filter(path -> path.toString().endsWith(".f06"))
-                .findFirst()
-                .get()
-                .toString();
-
-        Stream<String> streamBDF = Files.lines(Paths.get(bdfName), StandardCharsets.ISO_8859_1);
-
-        List<String> chbdyeList = streamBDF
-                .filter(p -> p.startsWith("CHBDYE  "))
-                .sorted()
-                .collect(Collectors.toList());
-
-        Stream<String> streamF = Files.lines(Paths.get(f06Name), StandardCharsets.ISO_8859_1);
-
-        List<String> hbdyList = streamF
-                .filter(p -> p.startsWith("                ") & p.contains("      0.000000E+00     "))
-                .sorted()
-                .collect(Collectors.toList());
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         List<String> hvasciiList = new ArrayList<>();
+        BDFReader bdfReader = new BDFReader();
+        F06Reader f06Reader = new F06Reader();
+
+        Runnable readBDF = () -> {
+            bdfReader.readBDF();
+        };
+
+        Runnable readF06 = () -> {
+            f06Reader.readF06();
+        };
+
+        Thread t1 = new Thread(readF06);
+        Thread t2 = new Thread(readBDF);
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        List<String> chbdyeList = bdfReader.getChbdyeList();
+        List<String> hbdyList = f06Reader.getHbdyList();
 
         hvasciiList.add("ALTAIR ASCII FILE");
         hvasciiList.add("$DELIMITER =	,");
@@ -50,11 +43,14 @@ public class ReadFiles {
         hvasciiList.add("$RESULT_TYPE = APPLIED-LOAD(s), FREE-CONVECTION(s), FORCED-CONVECTION(s), RADIATION(s), TOTAL(s)");
 
         for (int i = 0; i < chbdyeList.size(); i++) {
-            if (chbdyeList.get(i).trim().substring(9, 16).trim().equals(hbdyList.get(i).trim().substring(0, 8).trim())) {
+            if (chbdyeList.get(i).trim().substring(9, 16).trim().equals(hbdyList.get(i).trim().substring(0, 8).trim()))
+
+            {
                 hvasciiList.add(chbdyeList
                         .get(i)
                         .trim()
-                        .substring(17, 24) + ',' + hbdyList
+                        .substring(17, 24) + ','
+                        + hbdyList
                         .get(i)
                         .trim()
                         .substring(9)
@@ -72,5 +68,6 @@ public class ReadFiles {
         for (String s : hvasciiList) {
             writer.write(s + "\n");
         }
+        writer.close();
     }
 }

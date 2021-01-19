@@ -4,16 +4,18 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 class BDFReader {
 
     String bdfName = null;
-    List<String> chbdyeList = null;
+    List<String> chbdyeList = new ArrayList<>();
+    List<String> chbdyeListForCompare = new ArrayList<>();
 
 
-    void readBDF (){
+    void readBDF() {
 
         try {
             bdfName = Files.list(Paths.get(""))
@@ -29,13 +31,11 @@ class BDFReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    String getBdfName() {
-        return bdfName;
-    }
-
-    List<String> getChbdyeList() {
-        return chbdyeList;
+        chbdyeListForCompare = chbdyeList.stream()
+                .map(p -> p.trim()
+                        .substring(9, 16)
+                        .trim())
+                .collect(Collectors.toList());
     }
 }

@@ -32,9 +32,6 @@ public class ReadFiles {
         t1.join();
         t2.join();
 
-        List<String> chbdyeList = bdfReader.getChbdyeList();
-        List<String> hbdyList = f06Reader.getHbdyList();
-
         hvasciiList.add("ALTAIR ASCII FILE");
         hvasciiList.add("$DELIMITER =	,");
         hvasciiList.add("$SUBCASE = 	1	Subcase	1");
@@ -42,15 +39,14 @@ public class ReadFiles {
         hvasciiList.add("$COLUMN_INFO = 	ENTITY_ID");
         hvasciiList.add("$RESULT_TYPE = APPLIED-LOAD(s), FREE-CONVECTION(s), FORCED-CONVECTION(s), RADIATION(s), TOTAL(s)");
 
-        for (int i = 0; i < chbdyeList.size(); i++) {
-            if (chbdyeList.get(i).trim().substring(9, 16).trim().equals(hbdyList.get(i).trim().substring(0, 8).trim()))
-
+        for (int i = 0; i < bdfReader.chbdyeList.size(); i++) {
+            if (bdfReader.chbdyeListForCompare.get(i).equals(f06Reader.hbdyListForCompare.get(i)))
             {
-                hvasciiList.add(chbdyeList
+                hvasciiList.add(bdfReader.chbdyeList
                         .get(i)
                         .trim()
                         .substring(17, 24) + ','
-                        + hbdyList
+                        + f06Reader.hbdyList
                         .get(i)
                         .trim()
                         .substring(9)
